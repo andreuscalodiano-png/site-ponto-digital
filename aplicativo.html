@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EzPoint: App de Registro de Ponto por Celular | PontoDigital — Revenda Autorizada RWTech</title>
+    <meta name="description" content="App de ponto da RwTech: registre a jornada pelo celular com o EzPoint ONE e Infinity — geolocalização, foto e relatórios." />
+    <style>
+        :root {
+            --bg-soft: #F1F5F9;
+            --text-dark: #1E293B;
+            --text-light: #64748B;
+            --primary: #2563EB;
+            --primary-dark: #1D4ED8;
+            --border: #E2E8F0;
+        }
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #1a1a2e;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        .container {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ===== TOP BAR ===== */
+        .top-bar {
+            background: #073eae;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 30px;
+            font-size: 13px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .top-bar .whatsapp {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #fff;
+        }
+        .top-bar .whatsapp svg {
+            flex-shrink: 0;
+        }
+        .top-bar .top-links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .top-bar .top-links a {
+            color: #fff;
+            opacity: 0.9;
+            transition: opacity 0.3s;
+            font-size: 13px;
+        }
+        .top-bar .top-links a:hover {
+            opacity: 1;
+        }
+
+        /* ===== HEADER / NAV ===== */
+        /* ===== VISUAIS PRÓPRIOS (substituem imagens externas) ===== */
+        .phone-mock { display: inline-block; }
+        .feature-icon {
+            width: 200px; height: 160px; margin: 0 auto; border-radius: 16px;
+            background: linear-gradient(135deg, #DBEAFE, #EFF6FF);
+            border: 1px solid #BFDBFE;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 4rem;
+        }
+
+        /* ===== HEADER (mesmo do index) ===== */
+        .header {
+          position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+          background: rgba(255,255,255,0.92); backdrop-filter: blur(10px);
+          border-bottom: 1px solid var(--border); padding: 12px 0;
+        }
+        .header-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+        .header .logo { font-weight: 800; font-size: 1.1rem; color: var(--text-dark); display: flex; align-items: center; gap: 8px; }
+        .header .logo span { color: var(--primary); }
+        .nav { display: flex; align-items: center; gap: 18px; }
+        .nav a { font-size: .9rem; font-weight: 500; color: var(--text-light); transition: color .2s; position: relative; white-space: nowrap; }
+        .nav a:hover, .nav a.active { color: var(--primary); }
+        .nav a.active::after {
+          content: ''; position: absolute; bottom: -6px; left: 0; right: 0;
+          height: 2px; background: var(--primary); border-radius: 2px;
+        }
+        .btn { display: inline-flex; align-items: center; gap: 8px; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; transition: all .2s; font-family: inherit; }
+        .nav .btn.btn-primary { background: var(--primary); color: #fff !important; padding: 9px 18px; font-size: .85rem; }
+        .nav .btn.btn-primary:hover { background: var(--primary-dark); color: #fff !important; }
+        .nav .btn-outline-nav { background: #fff; color: var(--text-dark); border: 1.5px solid var(--border); padding: 8px 14px; font-size: .8rem; }
+        .nav .btn-outline-nav:hover { border-color: var(--primary); color: var(--primary); }
+        .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+        .hamburger span { display: block; width: 24px; height: 2.5px; background: var(--text-dark); border-radius: 2px; transition: .25s; }
+        .hamburger.open span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+        @media (max-width: 1024px) {
+          .nav { display: none; position: fixed; top: 56px; left: 0; right: 0; background: #fff; flex-direction: column; padding: 20px; gap: 16px; border-bottom: 1px solid var(--border); box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
+          .nav.open { display: flex; }
+          .nav a.active::after { display: none; }
+          .nav .btn, .nav .btn-outline-nav { width: 100%; justify-content: center; }
+          .hamburger { display: flex; }
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            background: linear-gradient(135deg, #f0f4ff 0%, #e8f0fe 100%);
+            padding: 70px 20px 0;
+            overflow: hidden;
+        }
+        .hero-grid {
+            max-width: 1140px; margin: 0 auto;
+            display: grid; grid-template-columns: 1.05fr .95fr;
+            gap: 40px; align-items: center;
+        }
+        .hero-text { text-align: left; padding-bottom: 60px; }
+        .hero-visual { align-self: end; }
+        .hero-visual img { display: block; max-width: 420px; width: 100%; margin: 0 auto; }
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            color: #1a1a2e;
+            margin-bottom: 20px;
+        }
+        .hero h1 span {
+            color: #073eae;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            color: #555;
+            max-width: 600px;
+            margin: 0 auto 35px;
+        }
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .hero-buttons .btn-primary {
+            background: #073eae;
+            color: #fff;
+            padding: 14px 36px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .hero-buttons .btn-primary:hover {
+            background: #052d7a;
+            transform: translateY(-2px);
+        }
+        .hero-buttons .btn-secondary {
+            background: transparent;
+            color: #073eae;
+            padding: 14px 36px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 16px;
+            border: 2px solid #073eae;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .hero-buttons .btn-secondary:hover {
+            background: rgba(7, 62, 174, 0.06);
+            transform: translateY(-2px);
+        }
+        .hero-apps {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+        .hero-apps img {
+            height: 56px;
+            opacity: 0.8;
+        }
+
+        /* ===== SECTION TITLES ===== */
+        section {
+            padding: 80px 0;
+        }
+        section.bg-light {
+            background: #f7f9fc;
+        }
+        .section-title {
+            text-align: center;
+            font-size: clamp(1.6rem, 3vw, 2.2rem);
+            color: #1a1a2e;
+            margin-bottom: 16px;
+        }
+        .section-sub {
+            text-align: center;
+            font-size: 1.05rem;
+            color: #666;
+            max-width: 700px;
+            margin: 0 auto 50px;
+        }
+
+        /* ===== BENEFITS / METHODS GRID ===== */
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            align-items: center;
+        }
+        .card-icon {
+            text-align: center;
+            padding: 30px 20px;
+        }
+        .card-icon .icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card-icon .icon svg {
+            width: 100%;
+            height: 100%;
+        }
+        .card-icon h3 {
+            font-size: 1.1rem;
+            color: #073eae;
+            margin-bottom: 8px;
+        }
+        .card-icon p {
+            font-size: 0.95rem;
+            color: #666;
+        }
+
+        /* ===== APP SHOWCASE ===== */
+        .app-showcase {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+        .app-showcase.reverse {
+            direction: rtl;
+        }
+        .app-showcase.reverse > * {
+            direction: ltr;
+        }
+        .app-text h2 {
+            font-size: 1.8rem;
+            color: #1a1a2e;
+            margin-bottom: 16px;
+        }
+        .app-text p {
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 16px;
+        }
+        .app-text .btn-outline {
+            display: inline-block;
+            color: #073eae;
+            border: 2px solid #073eae;
+            padding: 12px 30px;
+            border-radius: 6px;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+        .app-text .btn-outline:hover {
+            background: rgba(7, 62, 174, 0.06);
+        }
+        .app-image {
+            text-align: center;
+        }
+        .app-image img {
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            max-width: 100%;
+        }
+
+        /* ===== FEATURE DEEP-DIVE ===== */
+        .feature-block {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+            margin-bottom: 60px;
+        }
+        .feature-block.reverse {
+            direction: rtl;
+        }
+        .feature-block.reverse > * {
+            direction: ltr;
+        }
+        .feature-block:last-child {
+            margin-bottom: 0;
+        }
+        .feature-text h3 {
+            font-size: 1.5rem;
+            color: #1a1a2e;
+            margin-bottom: 12px;
+        }
+        .feature-text p {
+            color: #555;
+            margin-bottom: 16px;
+        }
+        .feature-text .btn-link {
+            color: #073eae;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .feature-text .btn-link:hover {
+            text-decoration: underline;
+        }
+        .feature-image {
+            text-align: center;
+        }
+        .feature-image img {
+            border-radius: 12px;
+            max-width: 100%;
+        }
+
+        /* ===== CTA FULL ===== */
+        .cta-full {
+            background: linear-gradient(135deg, #073eae 0%, #052d7a 100%);
+            color: #fff;
+            text-align: center;
+            padding: 80px 20px;
+        }
+        .cta-full h2 {
+            font-size: clamp(1.5rem, 3vw, 2.2rem);
+            margin-bottom: 20px;
+        }
+        .cta-full p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+        .cta-full .btn-white {
+            background: #fff;
+            color: #073eae;
+            padding: 16px 40px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 16px;
+            display: inline-block;
+            transition: transform 0.2s;
+        }
+        .cta-full .btn-white:hover {
+            transform: translateY(-2px);
+        }
+
+        /* ===== FEATURES ROW (EZPOINT ONE / INFINITY) ===== */
+        .features-row {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+        .feature-item {
+            text-align: center;
+            flex: 1;
+            min-width: 180px;
+            max-width: 260px;
+        }
+        .feature-item .icon {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 12px;
+        }
+        .feature-item .icon svg {
+            width: 100%;
+            height: 100%;
+        }
+        .feature-item h4 {
+            font-size: 1rem;
+            color: #1a1a2e;
+        }
+
+        /* ===== FAQ ===== */
+        .faq-list {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .faq-item {
+            border-bottom: 1px solid #e0e0e0;
+            padding: 20px 0;
+        }
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.05rem;
+            color: #1a1a2e;
+        }
+        .faq-question .arrow {
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+            color: #073eae;
+        }
+        .faq-question.active .arrow {
+            transform: rotate(180deg);
+        }
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+            color: #555;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+        .faq-answer.open {
+            max-height: 400px;
+            padding-top: 14px;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: #1a1a2e;
+            color: #ccc;
+            padding: 40px 20px;
+            font-size: 14px;
+        }
+        footer .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        footer a {
+            color: #ccc;
+        }
+        footer a:hover {
+            color: #fff;
+        }
+        footer .footer-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 992px) {
+            .grid-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .grid-3 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .app-showcase,
+            .app-showcase.reverse {
+                grid-template-columns: 1fr;
+                direction: ltr;
+            }
+            .feature-block,
+            .feature-block.reverse {
+                grid-template-columns: 1fr;
+                direction: ltr;
+            }
+            .feature-block.reverse .feature-image {
+                order: -1;
+            }
+            nav a {
+                font-size: 14px;
+            }
+        }
+        @media (max-width: 768px) {
+            .top-bar {
+                flex-direction: column;
+                text-align: center;
+                padding: 10px 16px;
+            }
+            .top-bar .top-links {
+                justify-content: center;
+            }
+            nav {
+                display: none;
+                flex-direction: column;
+                gap: 16px;
+                width: 100%;
+                padding: 20px 0;
+            }
+            nav.open {
+                display: flex;
+            }
+            header .container {
+                flex-wrap: wrap;
+            }
+            .menu-toggle {
+                display: block;
+            }
+            .grid-4,
+            .grid-3 {
+                grid-template-columns: 1fr;
+            }
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            .hero {
+                padding: 50px 16px 0;
+            }
+            .hero-grid { grid-template-columns: 1fr; gap: 10px; }
+            .hero-text { text-align: center; padding-bottom: 10px; }
+            .hero-buttons { justify-content: center; }
+            .hero-visual img { max-width: 300px; }
+            section {
+                padding: 50px 0;
+            }
+            .features-row {
+                flex-direction: column;
+                align-items: center;
+            }
+            footer .container {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== TOP BAR ===== -->
+    
+
+    <!-- ===== HEADER ===== -->
+    <header class="header">
+        <div class="container header-inner">
+            <a href="index.html" class="logo">
+                <svg width="28" height="28" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="7" fill="#2563EB"/><path d="M16 6c-2.8 0-5 2.2-5 5v2H9v12h14V13h-2v-2c0-2.8-2.2-5-5-5zm-3 7V11a3 3 0 016 0v2H13z" fill="#fff"/></svg>
+                <div><span>Ponto</span>Digital</div>
+            </a>
+            <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+            <nav class="nav" id="nav">
+                <a href="index.html#solucoes">Soluções</a>
+                <a href="index.html#beneficios">Benefícios</a>
+                <a href="aplicativo.html" class="active">Ponto Mobile</a>
+                <a href="planos.html">Planos</a>
+                <a href="index.html#faq">FAQ</a>
+                <a href="https://ezpointweb.com.br/" target="_blank" rel="noopener" class="btn-outline-nav btn">🕐 Registrar Ponto</a>
+                <a href="https://bridge-crm-one.vercel.app/login" target="_blank" rel="noopener" class="btn-outline-nav btn">📊 Abrir CRM</a>
+                <a href="index.html#contato" class="btn btn-primary">Solicitar Demonstração</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero">
+        <div class="hero-grid">
+            <div class="hero-text">
+                <h1><span>Controle de ponto</span> mobile: ideal para funcionários externos</h1>
+                <p>Aplicativos intuitivos para revolucionar o registro de ponto da sua empresa.</p>
+                <div class="hero-buttons">
+                    <a href="index.html#contato" class="btn-primary">Contrate agora</a>
+                    <a href="#conheca" class="btn-secondary">Conheça mais</a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <img src="ezpoint-infinity.png" alt="EzPoint Infinity — espelho de ponto no celular">
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== BENEFITS ===== -->
+    <section id="conheca">
+        <div class="container">
+            <h2 class="section-title">Controle de ponto mobile: mais praticidade e transparência</h2>
+            <p class="section-sub">Os aplicativos EzPoint One e EzPoint Infinity fazem o registro de ponto da sua empresa e oferecem toda a transparência e praticidade para seus colaboradores.</p>
+            <div class="grid-4">
+                <div class="card-icon">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24" fill="#073eae"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/></svg>
+                    </div>
+                    <h3>Geolocalização segura e protegida</h3>
+                    <p>Registros com localização precisa baseada na API oficial do Google, impossível de burlar.</p>
+                </div>
+                <div class="card-icon">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24" fill="#073eae"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                    </div>
+                    <h3>Registre os pontos de onde preferir</h3>
+                    <p>Colaboradores registram o ponto de qualquer lugar, diretamente pelo celular.</p>
+                </div>
+                <div class="card-icon">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24" fill="#073eae"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+                    </div>
+                    <h3>Comodidade e segurança</h3>
+                    <p>Registro de ponto seguro, protegido contra fraudes e alterações no dispositivo.</p>
+                </div>
+                <div class="card-icon">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24" fill="#073eae"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg>
+                    </div>
+                    <h3>Informações de fácil acesso pelo RH</h3>
+                    <p>Relatórios completos com espelho de ponto, geolocalização e histórico de registros.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== METHODS ===== -->
+    <section class="bg-light">
+        <div class="container">
+            <h2 class="section-title">Escolha a forma ideal para realizar o registro de ponto da sua empresa</h2>
+            <p class="section-sub">Com os nossos aplicativos de registro de ponto você tem a liberdade de escolher entre as mais modernas formas de se fazer registro de ponto.</p>
+            <div class="grid-4">
+                <div class="card-icon">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24" fill="#073eae"><path d="M9 11.75a1.25 1.25 0 100 2.5 1.25 1.25 0 000-2.5zm6 0a1.25 1.25 0 100 2.5 1.25 1.25 0 000-2.5zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                    </div>
+                    <h3>Reconhecimento facial</h3>
+                    <p>Método biométrico seguro que utiliza características únicas do rosto.</p>
+                </div>
+                <div class="card-icon">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24" fill="#073eae"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+                    </div>
+                    <h3>PIN</h3>
+                    <p>Registro rápido e seguro com código PIN pessoal e intransferível.</p>
+                </div>
+                <div class="card-icon">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24" fill="#073eae"><path d="M12 12c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm0-10c4.2 0 8 3.22 8 8.2 0 3.32-2.67 7.25-8 11.8-5.33-4.55-8-8.48-8-11.8C4 5.22 7.8 2 12 2z"/></svg>
+                    </div>
+                    <h3>PIN com foto</h3>
+                    <p>Registro com PIN acompanhado de foto, garantindo ainda mais segurança.</p>
+                </div>
+                <div class="card-icon">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24" fill="#073eae"><path d="M3 11h8V3H3v8zm2-6h4v4H5V5zm8-2v8h8V3h-8zm6 6h-4V5h4v4zM3 21h8v-8H3v8zm2-6h4v4H5v-4zm8-2v8h8v-8h-8zm6 6h-4v-4h4v4z"/></svg>
+                    </div>
+                    <h3>QR code</h3>
+                    <p>Registro simplificado através da leitura de QR code pelo aplicativo.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== EZPOINT ONE ===== -->
+    <section id="ezpoint-one">
+        <div class="container">
+            <div class="app-showcase">
+                <div class="app-text">
+                    <h2>EzPoint One: registro de ponto individual e transparente</h2>
+                    <p>Com o EzPoint One, você estabelece uma relação transparente com seus colaboradores. Através do aplicativo, é possível consultar o espelho de ponto em tempo real, realizar o registro de ponto, solicitar abono de falta, ajustes de ponto e enviar atestados médicos.</p>
+                    <p>Essa transparência fortalece a confiança e a comunicação entre empresa e colaborador, facilitando o alinhamento e a resolução de questões relacionadas ao registro de ponto de forma ágil e eficiente.</p>
+                    <a href="https://www.youtube.com/watch?v=6jg6iRtrUA0" class="btn-outline" target="_blank">▶ Assistir ao vídeo</a>
+                </div>
+                <div class="app-image">
+                    <img src="ezpoint-one.png" alt="EzPoint One — registro de ponto individual" style="max-width:380px; width:100%; margin:0 auto;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== EZPOINT ONE FEATURES ===== -->
+    <section class="bg-light">
+        <div class="container">
+            <h2 class="section-title">Conheça as principais características do aplicativo EzPoint One:</h2>
+            <div class="features-row">
+                <div class="feature-item">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24" fill="#073eae"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+                    </div>
+                    <h4>Protegido contra alterações</h4>
+                </div>
+                <div class="feature-item">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24" fill="#073eae"><path d="M9 11.75a1.25 1.25 0 100 2.5 1.25 1.25 0 000-2.5zm6 0a1.25 1.25 0 100 2.5 1.25 1.25 0 000-2.5zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                    </div>
+                    <h4>Reconhecimento Facial</h4>
+                </div>
+                <div class="feature-item">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24" fill="#073eae"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/></svg>
+                    </div>
+                    <h4>Horário e local do registro</h4>
+                </div>
+            </div>
+
+            <!-- Feature deep dives EzPoint One -->
+            <div style="margin-top:60px;">
+                <div class="feature-block">
+                    <div class="feature-text">
+                        <h3>Protegido contra alterações</h3>
+                        <p>O EzPoint One é protegido contra alterações de localização do GPS e de horário do aparelho de registro. O aplicativo foi desenvolvido com base na API do Google e fornece a localização e horário de forma precisa.</p>
+                        <a href="index.html#contato" class="btn-link">Entrar em contato →</a>
+                    </div>
+                    <div class="feature-image">
+                        <div class="feature-icon" role="img" aria-label="Protegido contra alterações">🔒</div>
+                    </div>
+                </div>
+                <div class="feature-block reverse">
+                    <div class="feature-text">
+                        <h3>Reconhecimento Facial</h3>
+                        <p>O Reconhecimento Facial é um dos métodos de registro de ponto mais seguros, já que utiliza características únicas do rosto de cada indivíduo para determinar quem está realizando o registro de ponto, protegendo contra fraudes.</p>
+                        <a href="index.html#contato" class="btn-link">Entrar em contato →</a>
+                    </div>
+                    <div class="feature-image">
+                        <div class="feature-icon" role="img" aria-label="Reconhecimento Facial">👤</div>
+                    </div>
+                </div>
+                <div class="feature-block">
+                    <div class="feature-text">
+                        <h3>Horário e local do registro de ponto</h3>
+                        <p>Através do nosso sistema de gestão de pontos, o EzPoint Web, você pode emitir relatórios completos e verificar todos os horários e locais onde foram realizados os registros de ponto. Além disso, nossa Geolocalização não pode ser burlada.</p>
+                        <a href="index.html#contato" class="btn-link">Entrar em contato →</a>
+                    </div>
+                    <div class="feature-image">
+                        <div class="feature-icon" role="img" aria-label="Horário e local">📍</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== GROWTH CTA ===== -->
+    <section class="cta-full">
+        <h2>Não é apenas um aplicativo para registro de ponto,<br>é a oportunidade da sua empresa crescer</h2>
+        <p>Faça o que você faz de melhor e deixe a burocracia conosco. Tenha uma verdadeira central de registro e gestão, onde os colaboradores podem solicitar ajustes de ponto, abono de falta, envio de atestados médicos e muito mais.</p>
+        <a href="index.html#contato" class="btn-white">Fazer um orçamento</a>
+    </section>
+
+    <!-- ===== EZPOINT INFINITY ===== -->
+    <section id="ezpoint-infinity">
+        <div class="container">
+            <div class="app-showcase reverse">
+                <div class="app-text">
+                    <h2>EzPoint Infinity: registro de ponto coletivo e sem relógio de ponto</h2>
+                    <p>Com o EzPoint Infinity, você pode realizar o registro e acompanhamento dos pontos de seus colaboradores. Tudo em um único celular ou tablet.</p>
+                    <p>O Infinity substitui os relógios de ponto tradicionais e está de acordo com a Portaria nº 671/2021 do Ministério do Trabalho. Garantindo proteção jurídica e praticidade para a sua empresa.</p>
+                    <a href="https://www.youtube.com/watch?v=djQPruZs9ck" class="btn-outline" target="_blank">▶ Assistir ao vídeo</a>
+                </div>
+                <div class="app-image">
+                    <img src="ezpoint-infinity.png" alt="EzPoint Infinity — espelho de ponto" style="max-width:380px; width:100%; margin:0 auto;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== EZPOINT INFINITY FEATURES ===== -->
+    <section class="bg-light">
+        <div class="container">
+            <h2 class="section-title">Conheça as principais características do aplicativo EzPoint Infinity:</h2>
+            <div class="features-row">
+                <div class="feature-item">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24" fill="#073eae"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2z"/></svg>
+                    </div>
+                    <h4>Bloqueio de outros dispositivos</h4>
+                </div>
+                <div class="feature-item">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24" fill="#073eae"><path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 16H5V5h14v14z"/></svg>
+                    </div>
+                    <h4>Modo Kiosk</h4>
+                </div>
+                <div class="feature-item">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24" fill="#073eae"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                    </div>
+                    <h4>Modo gestor</h4>
+                </div>
+            </div>
+
+            <div style="margin-top:60px;">
+                <div class="feature-block">
+                    <div class="feature-text">
+                        <h3>Bloqueio de outros dispositivos</h3>
+                        <p>Com o EzPoint Infinity você pode restringir o registro de ponto dos seus colaboradores em um único dispositivo smartphone/tablet, eliminando a possibilidade de realizar o registro em um dispositivo pessoal.</p>
+                        <a href="index.html#contato" class="btn-link">Entrar em contato →</a>
+                    </div>
+                    <div class="feature-image">
+                        <div class="feature-icon" role="img" aria-label="Bloqueio de dispositivos">🚫</div>
+                    </div>
+                </div>
+                <div class="feature-block reverse">
+                    <div class="feature-text">
+                        <h3>Modo Kiosk</h3>
+                        <p>No modo Kiosk todos os seus colaboradores fazem o registro de ponto no mesmo dispositivo smartphone/tablet, simulando um relógio de ponto tradicional.</p>
+                        <a href="index.html#contato" class="btn-link">Entrar em contato →</a>
+                    </div>
+                    <div class="feature-image">
+                        <div class="feature-icon" role="img" aria-label="Modo Kiosk">🖥️</div>
+                    </div>
+                </div>
+                <div class="feature-block">
+                    <div class="feature-text">
+                        <h3>Modo gestor</h3>
+                        <p>No modo gestor você pode visualizar e fazer a gestão de todos os pontos registrados pelos seus colaboradores. Registro e gestão de pontos em um único dispositivo na palma da sua mão.</p>
+                        <a href="index.html#contato" class="btn-link">Entrar em contato →</a>
+                    </div>
+                    <div class="feature-image">
+                        <div class="feature-icon" role="img" aria-label="Modo gestor">👔</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CTA 2 ===== -->
+    <section class="cta-full">
+        <h2>Controle da jornada de trabalho sem relógio de ponto,<br>sem planilhas e sem perda de tempo.</h2>
+        <p>Faça o que você faz de melhor e deixe a burocracia conosco. Tenha uma verdadeira central de registro e gestão e elimine a carga desnecessária de pequenas tarefas.</p>
+        <a href="index.html#contato" class="btn-white">Fazer um orçamento</a>
+    </section>
+
+    <!-- ===== FAQ ===== -->
+    <section>
+        <div class="container">
+            <h2 class="section-title">Ainda tem alguma dúvida?</h2>
+            <p class="section-sub">Em caso de maiores dúvidas a respeito dos aplicativos EzPoint One e EzPoint Infinity, você pode verificar nossa Central de Ajuda e conferir nossos artigos e tutoriais.</p>
+            <div style="text-align:center;margin-bottom:40px;">
+                <a href="https://www.rwtech.com.br/central-de-ajuda/" class="btn-secondary" style="display:inline-block;padding:12px 30px;border:2px solid #073eae;border-radius:6px;font-weight:600;color:#073eae;" target="_blank">Central de ajuda</a>
+            </div>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>O que acontece se o horário e localização do dispositivo for alterado?</span>
+                        <span class="arrow">▼</span>
+                    </div>
+                    <div class="faq-answer">Você ainda vai receber as informações exatas de localização e horário do registro do ponto. Pois nossos aplicativos são integrados com a API do Google e são capazes de recuperar as informações reais. Portanto, o sistema é 100% protegido contra esse tipo de fraude.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>Em quais dispositivos posso utilizar o EzPoint One e EzPoint Infinity?</span>
+                        <span class="arrow">▼</span>
+                    </div>
+                    <div class="faq-answer">O EzPoint One e EzPoint Infinity podem ser utilizados em smartphones e/ou tablets que possuem Android 10 e superior ou iOS 15 e superior.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>É possível registrar o ponto com o GPS desligado?</span>
+                        <span class="arrow">▼</span>
+                    </div>
+                    <div class="faq-answer">Quando você estiver utilizando a opção de registro de ponto com geolocalização, o colaborador não conseguirá realizar o registro com o GPS desligado.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>Como vou saber onde cada ponto foi registrado?</span>
+                        <span class="arrow">▼</span>
+                    </div>
+                    <div class="faq-answer">Você pode emitir relatórios completos que trazem as informações de todos os pontos registrados, incluindo a geolocalização de cada um dos pontos.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>É preciso estar conectado à internet para realizar o registro de ponto?</span>
+                        <span class="arrow">▼</span>
+                    </div>
+                    <div class="faq-answer">Não, os pontos ficam salvos no dispositivo enquanto não houver conexão com a internet e quando a conexão é reestabelecida, as informações são enviadas ao sistema.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FINAL CTA ===== -->
+    <section class="cta-full">
+        <h2>Otimize os processos da sua empresa com as soluções de registro e gestão de ponto da RwTech</h2>
+        <p>Comece a revolução do seu RH.</p>
+        <a href="index.html#contato" class="btn-white">Entrar em contato</a>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <div class="container">
+            <span>© 2026 Inove Informática — Revenda Autorizada RWTech · CNPJ: 23.662.187/0001-94</span>
+            <div class="footer-links">
+                <a href="index.html">Início</a>
+                <a href="planos.html">Planos</a>
+                <a href="index.html#contato">Contato</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script>
+        // Menu toggle
+        const hamburger = document.getElementById('hamburger');
+        const nav = document.getElementById('nav');
+        hamburger.addEventListener('click', () => { hamburger.classList.toggle('open'); nav.classList.toggle('open'); });
+        nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { hamburger.classList.remove('open'); nav.classList.remove('open'); }));
+
+        // FAQ accordion
+        function toggleFaq(el) {
+            el.classList.toggle('active');
+            const answer = el.nextElementSibling;
+            answer.classList.toggle('open');
+        }
+    </script>
+</body>
+</html>

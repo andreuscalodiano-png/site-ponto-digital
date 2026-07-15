@@ -117,11 +117,11 @@
       transition: box-shadow .25s;
     }
     .header.scrolled { box-shadow: 0 1px 12px rgba(0,0,0,0.04); }
-    .header-inner { display: flex; align-items: center; justify-content: space-between; }
+    .header-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
     .logo { font-weight: 800; font-size: 1.1rem; color: var(--text-dark); display: flex; align-items: center; gap: 8px; }
     .logo span { color: var(--primary); }
-    .nav { display: flex; align-items: center; gap: 28px; }
-    .nav a { font-size: .9rem; font-weight: 500; color: var(--text-light); transition: color .2s; position: relative; }
+    .nav { display: flex; align-items: center; gap: 18px; }
+    .nav a { font-size: .9rem; font-weight: 500; color: var(--text-light); transition: color .2s; position: relative; white-space: nowrap; }
     .nav a:hover, .nav a.active { color: var(--primary); }
     .nav a.active::after {
       content: ''; position: absolute; bottom: -6px; left: 0; right: 0;
@@ -353,7 +353,7 @@
         <a href="planos.html">Planos</a>
         <a href="#faq" data-section="faq">FAQ</a>
         <!-- ÁREA DO CLIENTE: substitua os href="#" pelos links reais -->
-        <a href="https://ezpointweb.com.br/" target="_blank" rel="noopener" class="btn btn-outline btn-sm">🕐 Acessar Sistema de Ponto</a>
+        <a href="https://ezpointweb.com.br/" target="_blank" rel="noopener" class="btn btn-outline btn-sm">🕐 Registrar Ponto</a>
         <a href="https://bridge-crm-one.vercel.app/login" target="_blank" rel="noopener" class="btn btn-outline btn-sm">📊 Abrir CRM</a>
         <a href="#contato" class="btn btn-primary">Solicitar Demonstração</a>
       </nav>
