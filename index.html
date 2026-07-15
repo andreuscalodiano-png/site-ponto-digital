@@ -295,6 +295,14 @@
     .footer .logo { color: rgba(255,255,255,0.7); justify-content: center; }
     .footer .logo span { color: #60A5FA; }
 
+    /* ===== VÍDEO ===== */
+    .video-wrap {
+      max-width: 860px; margin: 0 auto; position: relative;
+      padding-bottom: min(56.25%, 483px); height: 0; border-radius: 14px; overflow: hidden;
+      box-shadow: 0 10px 40px rgba(30,41,59,0.15); border: 1px solid var(--border);
+    }
+    .video-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
     /* ===== WHATSAPP FLOAT ===== */
     .wa-float {
       position: fixed; bottom: 20px; right: 20px; z-index: 99;
@@ -341,6 +349,7 @@
       <nav class="nav" id="nav">
         <a href="#solucoes" data-section="solucoes">Soluções</a>
         <a href="#beneficios" data-section="beneficios">Benefícios</a>
+        <a href="aplicativo.html">Ponto Mobile</a>
         <a href="planos.html">Planos</a>
         <a href="#faq" data-section="faq">FAQ</a>
         <!-- ÁREA DO CLIENTE: substitua os href="#" pelos links reais -->
@@ -454,6 +463,20 @@
             <li>Economia de até 50% do tempo do RH</li>
           </ul>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VÍDEO -->
+  <section class="section" style="background: linear-gradient(135deg, #f0f4ff 0%, #e8f0fe 100%);" id="video">
+    <div class="container">
+      <h2>Veja o app de ponto em ação</h2>
+      <p class="subtitle">Em poucos minutos você entende como o EzPoint One funciona no dia a dia da sua equipe.</p>
+      <div class="video-wrap">
+        <iframe src="https://www.youtube-nocookie.com/embed/6jg6iRtrUA0?start=7&rel=0" title="EzPoint One — app de registro de ponto" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+      <div style="text-align:center; margin-top:28px;">
+        <a href="https://www.youtube.com/@rwtech_oficial/videos" target="_blank" rel="noopener" class="btn" style="background:#FF0000; color:#fff;">▶ Veja mais vídeos no nosso canal</a>
       </div>
     </div>
   </section>
@@ -597,7 +620,8 @@
       </div>
       <div class="footer-links">
         <a href="#solucoes">Soluções</a><a href="#beneficios">Benefícios</a>
-        <a href="planos.html">Planos</a><a href="#faq">FAQ</a><a href="#contato">Contato</a>
+        <a href="aplicativo.html">Ponto Mobile</a><a href="planos.html">Planos</a><a href="#faq">FAQ</a>
+        <a href="https://www.youtube.com/@rwtech_oficial/videos" target="_blank" rel="noopener">YouTube</a><a href="#contato">Contato</a>
         <a href="#">Política de Privacidade</a>
       </div>
       <p>INOVE INFORMÁTICA MÓVEIS E PAPELARIA ME — CNPJ: 23.662.187/0001-94 — IE: 372.183.647.116</p>
